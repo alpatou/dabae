@@ -24,6 +24,11 @@ func snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 func snippetCreate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(405)
+		w.Write([]byte("Method Not Allowed"))
+		return
+	}
 	w.Write([]byte("Create snippet"))
 }
 
@@ -34,6 +39,7 @@ func main() {
 	// subtree path, end with / (and starts on this case)
 	mux.HandleFunc("/", home)
 	// fixed path
+	// longer matches are served from priority
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
