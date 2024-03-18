@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +20,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func snippetView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display snippet"))
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	fmt.Fprintf(w, "display with id %d", id)
 
 }
 
@@ -30,21 +37,4 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write([]byte("Create snippet"))
-}
-
-func main() {
-
-	// mux is like router synonym
-	mux := http.NewServeMux()
-	// subtree path, end with / (and starts on this case)
-	mux.HandleFunc("/", home)
-	// fixed path
-	// longer matches are served from priority
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
-
-	log.Println("start serving on  :4000")
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
-
 }
