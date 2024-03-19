@@ -8,6 +8,11 @@ import (
 func main() {
 	// mux is like router synonym
 	mux := http.NewServeMux()
+
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
 	// subtree path, end with / (and starts on this case)
 	mux.HandleFunc("/", home)
 	// fixed path
