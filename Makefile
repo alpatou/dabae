@@ -1,5 +1,5 @@
 run:
-	go run ./cmd/web -addr=":9999"
+	go run ./cmd/web -addr=$PORT
 	
 dry-run:
 	go run ./cmd/web 
