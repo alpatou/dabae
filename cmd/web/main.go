@@ -1,11 +1,16 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+
+	addr := flag.String("addr", ":4000", "obvious")
+	flag.Parse()
+
 	// mux is like router synonym
 	mux := http.NewServeMux()
 
@@ -20,7 +25,7 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	log.Println("start serving on  :4000")
-	err := http.ListenAndServe(":4000", mux)
+	log.Printf("start serving on  %s", *addr)
+	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
 }
