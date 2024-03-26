@@ -4,10 +4,14 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 )
+
+type config struct {
+	addr      string
+	staticDir string
+}
 
 func main() {
 
@@ -17,9 +21,13 @@ func main() {
 		log.Fatal("Error loading .env")
 	}
 
-	addrFromEnv := os.Getenv("port")
+	// addr := flag.String("addr", ":4000", "obvious")
 
-	addr := flag.String("addr", ":4000", "obvious")
+	var cfg config
+
+	flag.StringVar(&cfg.addr, "addr", ":4000", "Port")
+	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
+
 	flag.Parse()
 
 	// mux is like router synonym
@@ -36,7 +44,7 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	log.Printf("start serving on  %s and address from env is %s", *addr, addrFromEnv)
-	err := http.ListenAndServe(addrFromEnv, mux)
+	log.Printf("start serving on  %s", cfg.addr)
+	err := http.ListenAndServe(cfg.addr, mux)
 	log.Fatal(err)
 }
