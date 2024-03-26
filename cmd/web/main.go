@@ -4,9 +4,20 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	envFileNotLoaded := godotenv.Load()
+
+	if envFileNotLoaded != nil {
+		log.Fatal("Error loading .env")
+	}
+
+	addrFromEnv := os.Getenv("port")
 
 	addr := flag.String("addr", ":4000", "obvious")
 	flag.Parse()
@@ -25,7 +36,7 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	log.Printf("start serving on  %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	log.Printf("start serving on  %s and address from env is %s", *addr, addrFromEnv)
+	err := http.ListenAndServe(addrFromEnv, mux)
 	log.Fatal(err)
 }
