@@ -1,7 +1,7 @@
 run:
-	go run ./cmd/web -addr=$PORT
+	go run ./cmd/web -addr=${MYPORT}
 	
-dry-run:
+win-run:
 	go run ./cmd/web 
 
 help: 

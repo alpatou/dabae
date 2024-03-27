@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type config struct {
@@ -14,11 +16,11 @@ type config struct {
 
 func main() {
 
-	// envFileNotLoaded := godotenv.Load()
+	envFileNotLoaded := godotenv.Load()
 
-	// if envFileNotLoaded != nil {
-	// 	log.Fatal("Error loading .env")
-	// }
+	if envFileNotLoaded != nil {
+		log.Fatal("Error loading .env")
+	}
 
 	// addr := flag.String("addr", ":4000", "obvious")
 
