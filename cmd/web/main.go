@@ -4,8 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
-
-	"github.com/joho/godotenv"
+	"os"
 )
 
 type config struct {
@@ -15,11 +14,11 @@ type config struct {
 
 func main() {
 
-	envFileNotLoaded := godotenv.Load()
+	// envFileNotLoaded := godotenv.Load()
 
-	if envFileNotLoaded != nil {
-		log.Fatal("Error loading .env")
-	}
+	// if envFileNotLoaded != nil {
+	// 	log.Fatal("Error loading .env")
+	// }
 
 	// addr := flag.String("addr", ":4000", "obvious")
 
@@ -29,6 +28,10 @@ func main() {
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 
 	flag.Parse()
+
+	infolog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	errLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// mux is like router synonym
 	mux := http.NewServeMux()
@@ -44,7 +47,7 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	log.Printf("start serving on  %s", cfg.addr)
+	infolog.Printf("start serving on  %s", cfg.addr)
 	err := http.ListenAndServe(cfg.addr, mux)
-	log.Fatal(err)
+	errLog.Fatal(err)
 }
