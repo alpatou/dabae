@@ -14,6 +14,11 @@ type config struct {
 	staticDir string
 }
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 
 	envFileNotLoaded := godotenv.Load()
@@ -35,6 +40,11 @@ func main() {
 
 	errLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	app := &application{
+		errorLog: errLog,
+		infoLog:  infolog,
+	}
+
 	// mux is like router synonym
 	mux := http.NewServeMux()
 
@@ -43,13 +53,20 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// subtree path, end with / (and starts on this case)
-	mux.HandleFunc("/", home)
+	mux.HandleFunc("/", app.home)
 	// fixed path
 	// longer matches are served from priority
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
+	mux.HandleFunc("/snippet/view", app.snippetView)
+	mux.HandleFunc("/snippet/create", app.snippetCreate)
+
+	srv := &http.Server{
+		Addr:     cfg.addr,
+		ErrorLog: errLog,
+		Handler:  mux,
+	}
 
 	infolog.Printf("start serving on  %s", cfg.addr)
-	err := http.ListenAndServe(cfg.addr, mux)
+	err := srv.ListenAndServe()
+	// log to a file someday
 	errLog.Fatal(err)
 }
