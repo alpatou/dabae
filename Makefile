@@ -1,3 +1,7 @@
+#!make
+include .env
+export
+
 run:
 	go run ./cmd/web -addr=${MYPORT}
 	
