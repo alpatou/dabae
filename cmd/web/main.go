@@ -45,24 +45,10 @@ func main() {
 		infoLog:  infolog,
 	}
 
-	// mux is like router synonym
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	// subtree path, end with / (and starts on this case)
-	mux.HandleFunc("/", app.home)
-	// fixed path
-	// longer matches are served from priority
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
-
 	srv := &http.Server{
 		Addr:     cfg.addr,
 		ErrorLog: errLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	infolog.Printf("start serving on  %s", cfg.addr)
