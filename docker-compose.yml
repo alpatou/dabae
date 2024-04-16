@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    container_name: vasi
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - vasi-volume:/var/lib/mysql
+# a very tricky error https://stackoverflow.com/questions/59838692/mysql-root-password-is-set-but-getting-access-denied-for-user-rootlocalhost
+# volume names should be unique some how and not reuse usuals
+volumes:
+  vasi-volume:
