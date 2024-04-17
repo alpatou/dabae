@@ -19,3 +19,6 @@ db-stop:
 	
 db-connect: 
 	docker exec -it vasi mysql -uroot -p
+	
+db-create-schema: 
+	docker exec -i vasi mysql -uroot -proot  < db/schema.sql
