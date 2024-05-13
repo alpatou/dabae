@@ -44,13 +44,14 @@ func main() {
 
 	errLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	db, err := openDB(*dsn)
+	openDB(*dsn)
 
-	if err != nil {
-		errLog.Fatal(err)
-	}
+	// if db_err != nil {
+	// 	errLog.Fatal(db_err)
+	// }
 
-	defer db.Close()
+	// it causes access denied
+	// defer db.Close()
 
 	app := &application{
 		errorLog: errLog,
@@ -64,7 +65,7 @@ func main() {
 	}
 
 	infolog.Printf("start serving on  %s", cfg.addr)
-	err = srv.ListenAndServe()
+	err := srv.ListenAndServe()
 	// log to a file someday
 	errLog.Fatal(err)
 }
