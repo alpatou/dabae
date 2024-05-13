@@ -21,7 +21,7 @@ db-connect-root:
 	docker exec -it vasi mysql -uroot -p
 	
 db-connect-user-web: 
-	docker exec -it vasi mysql -D snippetbox -u web -ppass
+	docker exec -it vasi mysql -D snippetbox -u web -p
 	
 db-create-schema: 
 	docker exec -i vasi mysql -uroot -proot  < db/schema.sql
