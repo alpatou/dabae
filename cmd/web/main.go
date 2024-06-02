@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/alpatou/dabae/internal/models"
 	_ "github.com/go-sql-driver/mysql" // New import
 	"github.com/joho/godotenv"
 )
@@ -19,6 +20,7 @@ type config struct {
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -43,19 +45,24 @@ func main() {
 	infolog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 
 	errLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
+	db, db_err := openDB(*dsn)
 
-	openDB(*dsn)
+	if db_err != nil {
+		errLog.Fatal(db_err)
+	}
 
-	// if db_err != nil {
-	// 	errLog.Fatal(db_err)
-	// }
+	ping_err := db.Ping()
 
-	// it causes access denied
-	// defer db.Close()
+	if ping_err != nil {
+		errLog.Fatal(ping_err)
+	}
+	// it causes access denied, well ping does to be honest
+	defer db.Close()
 
 	app := &application{
 		errorLog: errLog,
 		infoLog:  infolog,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	srv := &http.Server{
@@ -75,8 +82,9 @@ func openDB(dsn string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
+	// if err := db.Ping(); err != nil {
+	// 	errLog.Fatal(err)
+	// 	return nil, err
+	// }
 	return db, nil
 }
