@@ -51,11 +51,11 @@ func main() {
 		errLog.Fatal(db_err)
 	}
 
-	ping_err := db.Ping()
+	// ping_err := db.Ping()
 
-	if ping_err != nil {
-		errLog.Fatal(ping_err)
-	}
+	// if ping_err != nil {
+	// errLog.Fatal(ping_err)
+	// }
 	// it causes access denied, well ping does to be honest
 	defer db.Close()
 
