@@ -44,6 +44,8 @@ func main() {
 
 	infolog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 
+	infolog.Printf(*dsn)
+
 	errLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
 	db, db_err := openDB(*dsn)
 
@@ -51,11 +53,12 @@ func main() {
 		errLog.Fatal(db_err)
 	}
 
-	// ping_err := db.Ping()
+	ping_err := db.Ping()
 
-	// if ping_err != nil {
-	// errLog.Fatal(ping_err)
-	// }
+	if ping_err != nil {
+		errLog.Fatal(ping_err)
+	}
+
 	// it causes access denied, well ping does to be honest
 	defer db.Close()
 
