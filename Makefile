@@ -23,5 +23,7 @@ db-connect-root:
 db-connect-user-web: 
 	docker exec -it vasi mysql -D snippetbox -u web -ppass
 	
+#GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'     IDENTIFIED BY 'YOUR_PASS' WITH GRANT OPTION; FLUSH PRIVILEGES;  
+
 db-create-schema: 
 	docker exec -i vasi mysql -uroot -proot  < db/schema.sql
