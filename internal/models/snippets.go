@@ -2,12 +2,14 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 )
 
 var (
-	tablename = "snippets"
+	tablename   = "snippets"
+	ErrNoRecord = errors.New("models: no such record found")
 )
 
 type Snippet struct {
@@ -40,7 +42,27 @@ func (model *SnippetModel) Insert(title string, content string, expires int) (in
 }
 
 func (model *SnippetModel) Get(id int) (*Snippet, error) {
-	return nil, nil
+
+	statement := fmt.Sprintf(`SELECT id, title, content, created, expires FROM %s 
+	WHERE expires > UTC_TIMESTAMP() AND id = ?`, tablename)
+
+	row := model.DB.QueryRow(statement, id)
+
+	s := &Snippet{}
+
+	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNoRecord
+
+		} else {
+			return nil, err
+		}
+	}
+
+	return s, nil
+
 }
 
 func (model *SnippetModel) Latest() ([]*Snippet, error) {
