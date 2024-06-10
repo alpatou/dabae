@@ -38,7 +38,7 @@ func main() {
 	flag.StringVar(&cfg.addr, "addr", ":4000", "Port")
 	flag.StringVar(&cfg.staticDir, "static-dir", "./ui/static", "Path to static assets")
 
-	dsn := flag.String("dsn", "web:pass@tcp(localhost:3306)/snippetbox?parseTime=true", "Mysql data source")
+	dsn := flag.String("dsn", "user:user@tcp(localhost:3306)/snippetbox?parseTime=true", "Mysql data source")
 
 	flag.Parse()
 
