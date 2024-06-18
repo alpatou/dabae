@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/alpatou/dabae/internal/models"
 	_ "github.com/go-sql-driver/mysql" // New import
@@ -18,9 +19,10 @@ type config struct {
 }
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	snippets *models.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -62,10 +64,17 @@ func main() {
 	// it causes access denied, well ping does to be honest
 	defer db.Close()
 
+	// Initialize a new template cache...
+	templateCache, errtempl := newTemplateCache()
+	if errtempl != nil {
+		errLog.Fatal(errtempl)
+	}
+
 	app := &application{
-		errorLog: errLog,
-		infoLog:  infolog,
-		snippets: &models.SnippetModel{DB: db},
+		errorLog:      errLog,
+		infoLog:       infolog,
+		snippets:      &models.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	srv := &http.Server{
