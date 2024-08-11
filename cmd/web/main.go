@@ -61,7 +61,8 @@ func main() {
 		errLog.Fatal(ping_err)
 	}
 
-	// it causes access denied, well ping does to be honest
+	// it causes access denied, well ping does to be honest,
+	// update: it was a grant priviliges mysql thing. somehow, it does not allow the host maching as a source
 	defer db.Close()
 
 	// Initialize a new template cache...
