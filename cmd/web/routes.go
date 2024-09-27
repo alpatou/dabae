@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
@@ -17,5 +19,7 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("/snippet/view", app.snippetView)
 	mux.HandleFunc("/snippet/create", app.snippetCreate)
 
-	return app.recoverpanic(app.logRequest(secureHeaders(mux)))
+	standard := alice.New(app.recoverpanic, app.logRequest, secureHeaders)
+
+	return standard.Then(mux)
 }
