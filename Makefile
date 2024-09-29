@@ -2,7 +2,7 @@ include .env
 export
 
 api-run: 
-	go run ./cmd/api/main.go
+	go run ./cmd/api
 
 run:
 	go run ./cmd/web -addr=${MYPORT}
