@@ -30,3 +30,6 @@ db-connect-user-web:
 
 db-create-schema: 
 	docker exec -i vasi mysql -uroot -proot  < db/schema.sql
+
+tmux:
+	tmuxinator start -p .tmuxdevelopment.yml
